@@ -1,0 +1,8 @@
+server:
+  port: 7923
+
+spring:
+  security:
+    user:
+      name: "tester"
+      password: "tester"
