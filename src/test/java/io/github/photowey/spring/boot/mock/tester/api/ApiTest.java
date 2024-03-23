@@ -49,13 +49,40 @@ class ApiTest extends LocalTest {
         super.tryHeadHealth();
     }
 
-    @Test
-    void testGet() throws Exception {
-        HelloQuery query = new HelloQuery("photowey");
+    // ----------------------------------------------------------------
 
+    @Test
+    void testGet_1() throws Exception {
+        this.get_1("photowey");
+    }
+
+    @Test
+    void testGet_2() throws Exception {
+        this.get_2("photowey", (actions) -> {
+            try {
+                actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()))
+                        .andExpect(MockMvcResultMatchers.jsonPath("$.data.greeting").value("Hello get.photowey"));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    @Test
+    void testGet_3() throws Exception {
         String token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
 
-        this.get(query, (builder) -> {
+        this.get_3("photowey", (builder) -> {
+            builder.header("Tenant", "web");
+            builder.header("Authorization", token);
+        });
+    }
+
+    @Test
+    void testGet_4() throws Exception {
+        String token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+
+        this.get_4("photowey", (builder) -> {
             builder.header("Tenant", "web");
             builder.header("Authorization", token);
         }, (actions) -> {
@@ -67,6 +94,60 @@ class ApiTest extends LocalTest {
             }
         });
     }
+
+    @Test
+    void testGet_5() throws Exception {
+        HelloQuery query = new HelloQuery("photowey");
+
+        this.get_5(query);
+    }
+
+    @Test
+    void testGet_6() throws Exception {
+        HelloQuery query = new HelloQuery("photowey");
+
+        this.get_6(query, (actions) -> {
+            try {
+                actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()))
+                        .andExpect(MockMvcResultMatchers.jsonPath("$.data.greeting").value("Hello get.photowey"));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    @Test
+    void testGet_7() throws Exception {
+        HelloQuery query = new HelloQuery("photowey");
+
+        String token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+
+        this.get_7(query, (builder) -> {
+            builder.header("Tenant", "web");
+            builder.header("Authorization", token);
+        });
+    }
+
+    @Test
+    void testGet_8() throws Exception {
+        HelloQuery query = new HelloQuery("photowey");
+
+        String token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+
+        this.get_8(query, (builder) -> {
+            builder.header("Tenant", "web");
+            builder.header("Authorization", token);
+        }, (actions) -> {
+            try {
+                actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()))
+                        .andExpect(MockMvcResultMatchers.jsonPath("$.data.greeting").value("Hello get.photowey"));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    // ----------------------------------------------------------------
 
     @Test
     void testPost() throws Exception {
@@ -144,12 +225,40 @@ class ApiTest extends LocalTest {
         });
     }
 
-    private void get(
-            HelloQuery query,
-            Consumer<MockHttpServletRequestBuilder> fn,
-            Consumer<ResultActions> fx) throws Exception {
+    private void get_1(String name) throws Exception {
+        this.doGetRequest(METHODS_BASE_API + "/get?name=" + name);
+    }
+
+    private void get_2(String name, Consumer<ResultActions> fx) throws Exception {
+        this.doGetRequest(METHODS_BASE_API + "/get?name=" + name, fx);
+    }
+
+    private void get_3(String name, Consumer<MockHttpServletRequestBuilder> fx) throws Exception {
+        this.doGetRequestB(METHODS_BASE_API + "/get?name=" + name, fx);
+    }
+
+    private void get_4(String name, Consumer<MockHttpServletRequestBuilder> fn, Consumer<ResultActions> fx) throws Exception {
+        this.doGetRequest(METHODS_BASE_API + "/get?name=" + name, fn, fx);
+    }
+
+
+    private void get_5(HelloQuery query) throws Exception {
+        this.doGetRequest(query, METHODS_BASE_API + "/get");
+    }
+
+    private void get_6(HelloQuery query, Consumer<ResultActions> fx) throws Exception {
+        this.doGetRequest(query, METHODS_BASE_API + "/get", fx);
+    }
+
+    private void get_7(HelloQuery query, Consumer<MockHttpServletRequestBuilder> fx) throws Exception {
+        this.doGetRequestB(query, METHODS_BASE_API + "/get", fx);
+    }
+
+    private void get_8(HelloQuery query, Consumer<MockHttpServletRequestBuilder> fn, Consumer<ResultActions> fx) throws Exception {
         this.doGetRequest(query, METHODS_BASE_API + "/get", fn, fx);
     }
+
+    // ----------------------------------------------------------------
 
     private void post(
             HelloPayload payload,
@@ -158,6 +267,8 @@ class ApiTest extends LocalTest {
         this.doPostRequest(payload, METHODS_BASE_API + "/post", fn, fx);
     }
 
+    // ----------------------------------------------------------------
+
     private void put(
             HelloPayload payload,
             Consumer<MockHttpServletRequestBuilder> fn,
@@ -165,12 +276,16 @@ class ApiTest extends LocalTest {
         this.doPutRequest(payload, METHODS_BASE_API + "/put", fn, fx);
     }
 
+    // ----------------------------------------------------------------
+
     private void patch(
             HelloPayload payload,
             Consumer<MockHttpServletRequestBuilder> fn,
             Consumer<ResultActions> fx) throws Exception {
         this.doPatchRequest(payload, METHODS_BASE_API + "/patch", fn, fx);
     }
+
+    // ----------------------------------------------------------------
 
     private void delete(
             Long userId,
