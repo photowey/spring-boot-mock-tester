@@ -150,12 +150,96 @@ class ApiTest extends LocalTest {
     // ----------------------------------------------------------------
 
     @Test
-    void testPost() throws Exception {
+    void testPost_1() throws Exception {
+        Long userId = 1711185600000L;
+        this.post_1(userId);
+    }
+
+    @Test
+    void testPost_2() throws Exception {
+        Long userId = 1711185600000L;
+        this.post_2(userId, (actions) -> {
+            try {
+                actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()))
+                        .andExpect(MockMvcResultMatchers.jsonPath("$.data.greeting").value("Hello post.empty.1711185600000"));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    @Test
+    void testPost_3() throws Exception {
+        Long userId = 1711185600000L;
+
+        String token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+
+
+        this.post_3(userId, (builder) -> {
+            builder.header("Tenant", "web");
+            builder.header("Authorization", token);
+        });
+    }
+
+    @Test
+    void testPost_4() throws Exception {
+        Long userId = 1711185600000L;
+
+        String token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+
+        this.post_4(userId, (builder) -> {
+            builder.header("Tenant", "web");
+            builder.header("Authorization", token);
+        }, (actions) -> {
+            try {
+                actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()))
+                        .andExpect(MockMvcResultMatchers.jsonPath("$.data.greeting").value("Hello post.empty.1711185600000"));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    @Test
+    void testPost_5() throws Exception {
+        HelloPayload payload = new HelloPayload("photowey");
+
+        this.post_5(payload);
+    }
+
+    @Test
+    void testPost_6() throws Exception {
+        HelloPayload payload = new HelloPayload("photowey");
+
+        this.post_6(payload, (actions) -> {
+            try {
+                actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()))
+                        .andExpect(MockMvcResultMatchers.jsonPath("$.data.greeting").value("Hello post.photowey"));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    @Test
+    void testPost_7() throws Exception {
         HelloPayload payload = new HelloPayload("photowey");
 
         String token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
 
-        this.post(payload, (builder) -> {
+        this.post_7(payload, (builder) -> {
+            builder.header("Tenant", "web");
+            builder.header("Authorization", token);
+        });
+    }
+
+    @Test
+    void testPost_8() throws Exception {
+        HelloPayload payload = new HelloPayload("photowey");
+
+        String token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+
+        this.post_8(payload, (builder) -> {
             builder.header("Tenant", "web");
             builder.header("Authorization", token);
         }, (actions) -> {
@@ -167,6 +251,8 @@ class ApiTest extends LocalTest {
             }
         });
     }
+
+    // ----------------------------------------------------------------
 
     @Test
     void testPut() throws Exception {
@@ -260,7 +346,35 @@ class ApiTest extends LocalTest {
 
     // ----------------------------------------------------------------
 
-    private void post(
+    private void post_1(Long userId) throws Exception {
+        this.doPostRequest(METHODS_BASE_API + "/post/empty/" + userId);
+    }
+
+    private void post_2(Long userId, Consumer<ResultActions> fx) throws Exception {
+        this.doPostRequest(METHODS_BASE_API + "/post/empty/" + userId, fx);
+    }
+
+    private void post_3(Long userId, Consumer<MockHttpServletRequestBuilder> fx) throws Exception {
+        this.doPostRequestB(METHODS_BASE_API + "/post/empty/" + userId, fx);
+    }
+
+    private void post_4(Long userId, Consumer<MockHttpServletRequestBuilder> fn, Consumer<ResultActions> fx) throws Exception {
+        this.doPostRequest(METHODS_BASE_API + "/post/empty/" + userId, fn, fx);
+    }
+
+    private void post_5(HelloPayload payload) throws Exception {
+        this.doPostRequest(payload, METHODS_BASE_API + "/post");
+    }
+
+    private void post_6(HelloPayload payload, Consumer<ResultActions> fx) throws Exception {
+        this.doPostRequest(payload, METHODS_BASE_API + "/post", fx);
+    }
+
+    private void post_7(HelloPayload payload, Consumer<MockHttpServletRequestBuilder> fn) throws Exception {
+        this.doPostRequestB(payload, METHODS_BASE_API + "/post", fn);
+    }
+
+    private void post_8(
             HelloPayload payload,
             Consumer<MockHttpServletRequestBuilder> fn,
             Consumer<ResultActions> fx) throws Exception {
