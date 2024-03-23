@@ -16,6 +16,15 @@
     <description>It is a Spring Boot Web API unit testing tool set implemented by MockMvc.</description>
     <inceptionYear>2024</inceptionYear>
 
+    <!-- @formatter:off -->
+    <scm>
+        <connection>scm:git:git@github.com:photowey/spring-boot-mock-tester.git</connection>
+        <developerConnection>scm:git:git@github.com:photowey/spring-boot-mock-tester.git</developerConnection>
+        <url>https://github.com/photowey/spring-boot-mock-tester</url>
+        <tag>HEAD</tag>
+    </scm>
+    <!-- @formatter:on -->
+    
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
