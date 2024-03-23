@@ -43,11 +43,17 @@ jobs:
             <localRepository>/home/runner/m2/repository</localRepository>
           </settings>" > /home/runner/m2/settings.xml
 
-      - name: Deploy with Maven
-        run: mvn clean -DskipTests source:jar deploy
+      #- name: Install with Maven
+      #  run: mvn clean -DskipTests source:jar install
 
-      - name: Build with Maven
-        run: mvn -B package --file pom.xml
+      #- name: Deploy with Maven
+      #  run: mvn clean -DskipTests source:jar deploy
+
+      - name: Test with Maven
+        run: mvn test
+
+      #- name: Build with Maven
+      #  run: mvn -B package --file pom.xml
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     #- name: Update dependency graph
