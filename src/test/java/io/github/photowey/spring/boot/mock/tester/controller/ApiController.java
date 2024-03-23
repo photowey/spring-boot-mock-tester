@@ -85,6 +85,19 @@ public class ApiController {
     }
 
     /**
+     * PUT :/put/empty/{id}
+     * <p>
+     * curl -X PUT http://localhost:7923/api/v1/post/empty/1711185600000
+     *
+     * @param userId {@code userId}
+     * @return {@link GreetingDTO}
+     */
+    @PutMapping("/put/empty/{userId}")
+    public ApiResult<GreetingDTO> putEmpty(@PathVariable("userId") Long userId) {
+        return ApiResult.ok(new GreetingDTO(String.format("Hello put.empty.%s", userId)));
+    }
+
+    /**
      * PATCH :/patch
      * <p>
      * curl -X PATCH -H "Content-Type:application/json" -d '{"name":"photowey"}' http://localhost:7923/api/v1/patch

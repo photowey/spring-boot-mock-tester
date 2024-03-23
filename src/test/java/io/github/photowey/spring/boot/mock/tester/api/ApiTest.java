@@ -252,15 +252,99 @@ class ApiTest extends LocalTest {
         });
     }
 
-    // ----------------------------------------------------------------
+    // ---------------------------------------------------------------- Put
 
     @Test
-    void testPut() throws Exception {
+    void testPut_1() throws Exception {
+        Long userId = 1711185600000L;
+        this.put_1(userId);
+    }
+
+    @Test
+    void testPut_2() throws Exception {
+        Long userId = 1711185600000L;
+        this.put_2(userId, (actions) -> {
+            try {
+                actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()))
+                        .andExpect(MockMvcResultMatchers.jsonPath("$.data.greeting").value("Hello put.empty.1711185600000"));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    @Test
+    void testPut_3() throws Exception {
+        Long userId = 1711185600000L;
+
+        String token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+
+
+        this.put_3(userId, (builder) -> {
+            builder.header("Tenant", "web");
+            builder.header("Authorization", token);
+        });
+    }
+
+    @Test
+    void testPut_4() throws Exception {
+        Long userId = 1711185600000L;
+
+        String token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+
+        this.put_4(userId, (builder) -> {
+            builder.header("Tenant", "web");
+            builder.header("Authorization", token);
+        }, (actions) -> {
+            try {
+                actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()))
+                        .andExpect(MockMvcResultMatchers.jsonPath("$.data.greeting").value("Hello put.empty.1711185600000"));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    @Test
+    void testPut_5() throws Exception {
+        HelloPayload payload = new HelloPayload("photowey");
+
+        this.put_5(payload);
+    }
+
+    @Test
+    void testPut_6() throws Exception {
+        HelloPayload payload = new HelloPayload("photowey");
+
+        this.put_6(payload, (actions) -> {
+            try {
+                actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()))
+                        .andExpect(MockMvcResultMatchers.jsonPath("$.data.greeting").value("Hello put.photowey"));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    @Test
+    void testPut_7() throws Exception {
         HelloPayload payload = new HelloPayload("photowey");
 
         String token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
 
-        this.put(payload, (builder) -> {
+        this.put_7(payload, (builder) -> {
+            builder.header("Tenant", "web");
+            builder.header("Authorization", token);
+        });
+    }
+
+    @Test
+    void testPut_8() throws Exception {
+        HelloPayload payload = new HelloPayload("photowey");
+
+        String token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+
+        this.put_8(payload, (builder) -> {
             builder.header("Tenant", "web");
             builder.header("Authorization", token);
         }, (actions) -> {
@@ -272,6 +356,8 @@ class ApiTest extends LocalTest {
             }
         });
     }
+
+    // ----------------------------------------------------------------
 
     @Test
     void testPatch() throws Exception {
@@ -381,9 +467,37 @@ class ApiTest extends LocalTest {
         this.doPostRequest(payload, METHODS_BASE_API + "/post", fn, fx);
     }
 
-    // ----------------------------------------------------------------
+    // ---------------------------------------------------------------- Put
 
-    private void put(
+    private void put_1(Long userId) throws Exception {
+        this.doPutRequest(METHODS_BASE_API + "/put/empty/" + userId);
+    }
+
+    private void put_2(Long userId, Consumer<ResultActions> fx) throws Exception {
+        this.doPutRequest(METHODS_BASE_API + "/put/empty/" + userId, fx);
+    }
+
+    private void put_3(Long userId, Consumer<MockHttpServletRequestBuilder> fx) throws Exception {
+        this.doPutRequestB(METHODS_BASE_API + "/put/empty/" + userId, fx);
+    }
+
+    private void put_4(Long userId, Consumer<MockHttpServletRequestBuilder> fn, Consumer<ResultActions> fx) throws Exception {
+        this.doPutRequest(METHODS_BASE_API + "/put/empty/" + userId, fn, fx);
+    }
+
+    private void put_5(HelloPayload payload) throws Exception {
+        this.doPutRequest(payload, METHODS_BASE_API + "/put");
+    }
+
+    private void put_6(HelloPayload payload, Consumer<ResultActions> fx) throws Exception {
+        this.doPutRequest(payload, METHODS_BASE_API + "/put", fx);
+    }
+
+    private void put_7(HelloPayload payload, Consumer<MockHttpServletRequestBuilder> fn) throws Exception {
+        this.doPutRequestB(payload, METHODS_BASE_API + "/put", fn);
+    }
+
+    private void put_8(
             HelloPayload payload,
             Consumer<MockHttpServletRequestBuilder> fn,
             Consumer<ResultActions> fx) throws Exception {
