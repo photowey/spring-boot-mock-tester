@@ -124,15 +124,28 @@ public class ApiController {
     }
 
     /**
-     * DELETE :/delete/{userId}
+     * DELETE :/delete
      * <p>
-     * curl -X DELETE http://localhost:7923/api/v1/delete/1711120980000
+     * curl -X DELETE -H "Content-Type:application/json" -d '{"name":"photowey"}' http://localhost:7923/api/v1/delete
+     *
+     * @param payload {@link  HelloPayload}
+     * @return {@link GreetingDTO}
+     */
+    @DeleteMapping("/delete")
+    public ApiResult<GreetingDTO> delete(@RequestBody HelloPayload payload) {
+        return ApiResult.ok(new GreetingDTO(String.format("Hello delete.%s", payload.getName())));
+    }
+
+    /**
+     * DELETE :/delete/empty/{userId}
+     * <p>
+     * curl -X DELETE http://localhost:7923/api/v1/delete/empty/1711120980000
      *
      * @param userId {@code userId}
      * @return {@link GreetingDTO}
      */
-    @DeleteMapping("/delete/{userId}")
-    public ApiResult<GreetingDTO> delete(@PathVariable("userId") Long userId) {
-        return ApiResult.ok(new GreetingDTO(String.format("Hello delete.%d", userId)));
+    @DeleteMapping("/delete/empty/{userId}")
+    public ApiResult<GreetingDTO> deleteEmpty(@PathVariable("userId") Long userId) {
+        return ApiResult.ok(new GreetingDTO(String.format("Hello delete.empty.%d", userId)));
     }
 }

@@ -459,24 +459,111 @@ class ApiTest extends LocalTest {
         });
     }
 
+    // ----
+
     @Test
-    void testDelete() throws Exception {
-        Long userId = 1711120980000L;
+    void testDelete_1() throws Exception {
+        Long userId = 1711185600000L;
+        this.delete_1(userId);
+    }
 
-        String token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
-
-        this.delete(userId, (builder) -> {
-            builder.header("Tenant", "web");
-            builder.header("Authorization", token);
-        }, (actions) -> {
+    @Test
+    void testDelete_2() throws Exception {
+        Long userId = 1711185600000L;
+        this.delete_2(userId, (actions) -> {
             try {
                 actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()))
-                        .andExpect(MockMvcResultMatchers.jsonPath("$.data.greeting").value("Hello delete.1711120980000"));
+                        .andExpect(MockMvcResultMatchers.jsonPath("$.data.greeting").value("Hello delete.empty.1711185600000"));
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         });
     }
+
+    @Test
+    void testDelete_3() throws Exception {
+        Long userId = 1711185600000L;
+
+        String token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+
+        this.delete_3(userId, (builder) -> {
+            builder.header("Tenant", "web");
+            builder.header("Authorization", token);
+        });
+    }
+
+    @Test
+    void testDelete_4() throws Exception {
+        Long userId = 1711185600000L;
+
+        String token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+
+        this.delete_4(userId, (builder) -> {
+            builder.header("Tenant", "web");
+            builder.header("Authorization", token);
+        }, (actions) -> {
+            try {
+                actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()))
+                        .andExpect(MockMvcResultMatchers.jsonPath("$.data.greeting").value("Hello delete.empty.1711185600000"));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    @Test
+    void testDelete_5() throws Exception {
+        HelloPayload payload = new HelloPayload("photowey");
+
+        this.delete_5(payload);
+    }
+
+    @Test
+    void testDelete_6() throws Exception {
+        HelloPayload payload = new HelloPayload("photowey");
+
+        this.delete_6(payload, (actions) -> {
+            try {
+                actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()))
+                        .andExpect(MockMvcResultMatchers.jsonPath("$.data.greeting").value("Hello delete.photowey"));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    @Test
+    void testDelete_7() throws Exception {
+        HelloPayload payload = new HelloPayload("photowey");
+
+        String token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+
+        this.delete_7(payload, (builder) -> {
+            builder.header("Tenant", "web");
+            builder.header("Authorization", token);
+        });
+    }
+
+    @Test
+    void testDelete_8() throws Exception {
+        HelloPayload payload = new HelloPayload("photowey");
+
+        String token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+
+        this.delete_8(payload, (builder) -> {
+            builder.header("Tenant", "web");
+            builder.header("Authorization", token);
+        }, (actions) -> {
+            try {
+                actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()))
+                        .andExpect(MockMvcResultMatchers.jsonPath("$.data.greeting").value("Hello delete.photowey"));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    // ----
 
     private void get_1(String name) throws Exception {
         this.doGetRequest(METHODS_BASE_API + "/get?name=" + name);
@@ -622,12 +709,40 @@ class ApiTest extends LocalTest {
         this.doPatchRequest(payload, METHODS_BASE_API + "/patch", fn, fx);
     }
 
-    // ----------------------------------------------------------------
+    // ---------------------------------------------------------------- Delete
 
-    private void delete(
-            Long userId,
+    private void delete_1(Long userId) throws Exception {
+        this.doDeleteRequest(METHODS_BASE_API + "/delete/empty/" + userId);
+    }
+
+    private void delete_2(Long userId, Consumer<ResultActions> fx) throws Exception {
+        this.doDeleteRequest(METHODS_BASE_API + "/delete/empty/" + userId, fx);
+    }
+
+    private void delete_3(Long userId, Consumer<MockHttpServletRequestBuilder> fx) throws Exception {
+        this.doDeleteRequestB(METHODS_BASE_API + "/delete/empty/" + userId, fx);
+    }
+
+    private void delete_4(Long userId, Consumer<MockHttpServletRequestBuilder> fn, Consumer<ResultActions> fx) throws Exception {
+        this.doDeleteRequest(METHODS_BASE_API + "/delete/empty/" + userId, fn, fx);
+    }
+
+    private void delete_5(HelloPayload payload) throws Exception {
+        this.doDeleteRequest(payload, METHODS_BASE_API + "/delete");
+    }
+
+    private void delete_6(HelloPayload payload, Consumer<ResultActions> fx) throws Exception {
+        this.doDeleteRequest(payload, METHODS_BASE_API + "/delete", fx);
+    }
+
+    private void delete_7(HelloPayload payload, Consumer<MockHttpServletRequestBuilder> fn) throws Exception {
+        this.doDeleteRequestB(payload, METHODS_BASE_API + "/delete", fn);
+    }
+
+    private void delete_8(
+            HelloPayload payload,
             Consumer<MockHttpServletRequestBuilder> fn,
             Consumer<ResultActions> fx) throws Exception {
-        this.doDeleteRequest(null, METHODS_BASE_API + "/delete/" + userId, fn, fx);
+        this.doDeleteRequest(payload, METHODS_BASE_API + "/delete", fn, fx);
     }
 }
