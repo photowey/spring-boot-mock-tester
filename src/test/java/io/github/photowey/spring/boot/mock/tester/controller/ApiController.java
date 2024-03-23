@@ -111,6 +111,19 @@ public class ApiController {
     }
 
     /**
+     * PATCH :/patch/empty/{id}
+     * <p>
+     * curl -X PATCH http://localhost:7923/api/v1/post/empty/1711185600000
+     *
+     * @param userId {@code userId}
+     * @return {@link GreetingDTO}
+     */
+    @PatchMapping("/patch/empty/{userId}")
+    public ApiResult<GreetingDTO> patchEmpty(@PathVariable("userId") Long userId) {
+        return ApiResult.ok(new GreetingDTO(String.format("Hello patch.empty.%s", userId)));
+    }
+
+    /**
      * DELETE :/delete/{userId}
      * <p>
      * curl -X DELETE http://localhost:7923/api/v1/delete/1711120980000

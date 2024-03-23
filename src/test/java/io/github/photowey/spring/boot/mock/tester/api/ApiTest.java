@@ -147,7 +147,7 @@ class ApiTest extends LocalTest {
         });
     }
 
-    // ----------------------------------------------------------------
+    // ---------------------------------------------------------------- Post
 
     @Test
     void testPost_1() throws Exception {
@@ -173,7 +173,6 @@ class ApiTest extends LocalTest {
         Long userId = 1711185600000L;
 
         String token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
-
 
         this.post_3(userId, (builder) -> {
             builder.header("Tenant", "web");
@@ -279,7 +278,6 @@ class ApiTest extends LocalTest {
 
         String token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
 
-
         this.put_3(userId, (builder) -> {
             builder.header("Tenant", "web");
             builder.header("Authorization", token);
@@ -357,15 +355,98 @@ class ApiTest extends LocalTest {
         });
     }
 
-    // ----------------------------------------------------------------
+    // ---------------------------------------------------------------- Patch
 
     @Test
-    void testPatch() throws Exception {
+    void testPatch_1() throws Exception {
+        Long userId = 1711185600000L;
+        this.patch_1(userId);
+    }
+
+    @Test
+    void testPatch_2() throws Exception {
+        Long userId = 1711185600000L;
+        this.patch_2(userId, (actions) -> {
+            try {
+                actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()))
+                        .andExpect(MockMvcResultMatchers.jsonPath("$.data.greeting").value("Hello patch.empty.1711185600000"));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    @Test
+    void testPatch_3() throws Exception {
+        Long userId = 1711185600000L;
+
+        String token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+
+        this.patch_3(userId, (builder) -> {
+            builder.header("Tenant", "web");
+            builder.header("Authorization", token);
+        });
+    }
+
+    @Test
+    void testPatch_4() throws Exception {
+        Long userId = 1711185600000L;
+
+        String token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+
+        this.patch_4(userId, (builder) -> {
+            builder.header("Tenant", "web");
+            builder.header("Authorization", token);
+        }, (actions) -> {
+            try {
+                actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()))
+                        .andExpect(MockMvcResultMatchers.jsonPath("$.data.greeting").value("Hello patch.empty.1711185600000"));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    @Test
+    void testPatch_5() throws Exception {
+        HelloPayload payload = new HelloPayload("photowey");
+
+        this.put_5(payload);
+    }
+
+    @Test
+    void testPatch_6() throws Exception {
+        HelloPayload payload = new HelloPayload("photowey");
+
+        this.patch_6(payload, (actions) -> {
+            try {
+                actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()))
+                        .andExpect(MockMvcResultMatchers.jsonPath("$.data.greeting").value("Hello patch.photowey"));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    @Test
+    void testPatch_7() throws Exception {
         HelloPayload payload = new HelloPayload("photowey");
 
         String token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
 
-        this.patch(payload, (builder) -> {
+        this.patch_7(payload, (builder) -> {
+            builder.header("Tenant", "web");
+            builder.header("Authorization", token);
+        });
+    }
+
+    @Test
+    void testPatch_8() throws Exception {
+        HelloPayload payload = new HelloPayload("photowey");
+
+        String token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+
+        this.patch_8(payload, (builder) -> {
             builder.header("Tenant", "web");
             builder.header("Authorization", token);
         }, (actions) -> {
@@ -504,9 +585,37 @@ class ApiTest extends LocalTest {
         this.doPutRequest(payload, METHODS_BASE_API + "/put", fn, fx);
     }
 
-    // ----------------------------------------------------------------
+    // ---------------------------------------------------------------- Patch
 
-    private void patch(
+    private void patch_1(Long userId) throws Exception {
+        this.doPatchRequest(METHODS_BASE_API + "/patch/empty/" + userId);
+    }
+
+    private void patch_2(Long userId, Consumer<ResultActions> fx) throws Exception {
+        this.doPatchRequest(METHODS_BASE_API + "/patch/empty/" + userId, fx);
+    }
+
+    private void patch_3(Long userId, Consumer<MockHttpServletRequestBuilder> fx) throws Exception {
+        this.doPatchRequestB(METHODS_BASE_API + "/patch/empty/" + userId, fx);
+    }
+
+    private void patch_4(Long userId, Consumer<MockHttpServletRequestBuilder> fn, Consumer<ResultActions> fx) throws Exception {
+        this.doPatchRequest(METHODS_BASE_API + "/patch/empty/" + userId, fn, fx);
+    }
+
+    private void patch_5(HelloPayload payload) throws Exception {
+        this.doPatchRequest(payload, METHODS_BASE_API + "/patch");
+    }
+
+    private void patch_6(HelloPayload payload, Consumer<ResultActions> fx) throws Exception {
+        this.doPatchRequest(payload, METHODS_BASE_API + "/patch", fx);
+    }
+
+    private void patch_7(HelloPayload payload, Consumer<MockHttpServletRequestBuilder> fn) throws Exception {
+        this.doPatchRequestB(payload, METHODS_BASE_API + "/patch", fn);
+    }
+
+    private void patch_8(
             HelloPayload payload,
             Consumer<MockHttpServletRequestBuilder> fn,
             Consumer<ResultActions> fx) throws Exception {
