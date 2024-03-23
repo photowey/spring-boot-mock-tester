@@ -44,7 +44,8 @@ jobs:
           </settings>" > /home/runner/m2/settings.xml
 
       - name: Deploy with Maven
-        run: mvn clean -DskipTests source:jar deploy
+        #run: mvn clean -DskipTests source:jar deploy
+        run: mvn clean -DskipTests source:jar install
 
       - name: Build with Maven
         run: mvn -B package --file pom.xml
