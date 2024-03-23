@@ -459,7 +459,7 @@ class ApiTest extends LocalTest {
         });
     }
 
-    // ----
+    // ----------------------------------------------------------------
 
     @Test
     void testDelete_1() throws Exception {
@@ -563,7 +563,7 @@ class ApiTest extends LocalTest {
         });
     }
 
-    // ----
+    // ----------------------------------------------------------------
 
     private void get_1(String name) throws Exception {
         this.doGetRequest(METHODS_BASE_API + "/get?name=" + name);

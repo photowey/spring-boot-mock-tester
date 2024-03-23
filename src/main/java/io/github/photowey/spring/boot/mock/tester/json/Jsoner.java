@@ -29,7 +29,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 /**
  * {@code Jsoner}
@@ -38,7 +37,6 @@ import java.util.concurrent.Callable;
  * @date 2024/03/22
  * @since 1.0.0
  */
-
 public final class Jsoner {
 
     private Jsoner() {
@@ -75,14 +73,33 @@ public final class Jsoner {
         return objectMapper;
     }
 
+    /**
+     * Initializes and returns the {@link ObjectMapper} instance, either using the shared instance or creating a new one.
+     *
+     * @return The initialized ObjectMapper instance for JSON serialization and deserialization.
+     */
     private static ObjectMapper initObjectMapper() {
         return sharedObjectMapper != null ? sharedObjectMapper : initDefaultObjectMapper();
     }
 
+    /**
+     * Injects a shared {@link ObjectMapper} instance for JSON serialization and deserialization.
+     *
+     * @param objectMapper The ObjectMapper instance to be shared.
+     */
     public static void injectSharedObjectMapper(ObjectMapper objectMapper) {
         sharedObjectMapper = objectMapper;
     }
 
+    /**
+     * Parses the given JSON string into an object of the specified class type.
+     *
+     * @param json  The JSON string to be parsed.
+     * @param clazz The target class type to which the JSON should be deserialized.
+     * @param <T>   The generic type parameter representing the type of the parsed object.
+     * @return An instance of the desired class `T` as represented by the JSON data.
+     * If an exception occurs during parsing, it is wrapped and rethrown as a runtime exception.
+     */
     public static <T> T parseObject(String json, Class<T> clazz) {
         try {
             ObjectMapper mapper = getObjectMapper();
@@ -92,6 +109,15 @@ public final class Jsoner {
         }
     }
 
+    /**
+     * Parses the given JSON string into an object of the specified generic type.
+     *
+     * @param json    The JSON string to be parsed.
+     * @param typeRef A `TypeReference` that accurately specifies the target generic type for the object.
+     * @param <T>     The generic type parameter representing the type of the parsed object.
+     * @return An instance of the parsed object with the type defined by `typeRef`.
+     * If an exception occurs during parsing, it is wrapped and rethrown as a runtime exception.
+     */
     public static <T> T parseObject(String json, TypeReference<T> typeRef) {
         try {
             ObjectMapper mapper = getObjectMapper();
@@ -101,6 +127,15 @@ public final class Jsoner {
         }
     }
 
+    /**
+     * Parses the given JSON byte array into an object of the specified class type.
+     *
+     * @param json  The JSON byte array to be parsed.
+     * @param clazz The target class type to which the JSON should be deserialized.
+     * @param <T>   The generic type parameter representing the type of the parsed object.
+     * @return An instance of the desired class `T` as represented by the JSON data.
+     * If an exception occurs during parsing, it is wrapped and rethrown as a runtime exception.
+     */
     public static <T> T parseObject(byte[] json, Class<T> clazz) {
         try {
             ObjectMapper mapper = getObjectMapper();
@@ -110,6 +145,15 @@ public final class Jsoner {
         }
     }
 
+    /**
+     * Parses the given JSON input stream into an object of the specified class type.
+     *
+     * @param json  The JSON input stream to be parsed.
+     * @param clazz The target class type to which the JSON should be deserialized.
+     * @param <T>   The generic type parameter representing the type of the parsed object.
+     * @return An instance of the desired class `T` as represented by the JSON data.
+     * If an exception occurs during parsing, it is wrapped and rethrown as a runtime exception.
+     */
     public static <T> T parseObject(InputStream json, Class<T> clazz) {
         try {
             ObjectMapper mapper = getObjectMapper();
@@ -119,6 +163,15 @@ public final class Jsoner {
         }
     }
 
+    /**
+     * Parses the given JSON byte array into an object of the specified generic type.
+     *
+     * @param json    The JSON byte array to be parsed.
+     * @param typeRef A `TypeReference` that accurately specifies the target generic type for the object.
+     * @param <T>     The generic type parameter representing the type of the parsed object.
+     * @return An instance of the parsed object with the type defined by `typeRef`.
+     * If an exception occurs during parsing, it is wrapped and rethrown as a runtime exception.
+     */
     public static <T> T parseObject(byte[] json, TypeReference<T> typeRef) {
         try {
             ObjectMapper mapper = getObjectMapper();
@@ -128,6 +181,15 @@ public final class Jsoner {
         }
     }
 
+    /**
+     * Parses the given JSON input stream into an object of the specified generic type.
+     *
+     * @param json    The JSON input stream to be parsed.
+     * @param typeRef A `TypeReference` that accurately specifies the target generic type for the object.
+     * @param <T>     The generic type parameter representing the type of the parsed object.
+     * @return An instance of the parsed object with the type defined by `typeRef`.
+     * If an exception occurs during parsing, it is wrapped and rethrown as a runtime exception.
+     */
     public static <T> T parseObject(InputStream json, TypeReference<T> typeRef) {
         try {
             ObjectMapper mapper = getObjectMapper();
@@ -139,10 +201,27 @@ public final class Jsoner {
 
     // ---------------------------------------------------------------- parse.array
 
+    /**
+     * Parses the given JSON string into a List of objects of the specified type.
+     *
+     * @param json The JSON string to be parsed into a List.
+     * @param <T>  The generic type parameter representing the type of objects in the List.
+     * @return A List of objects parsed from the JSON string.
+     * If an exception occurs during parsing, it is wrapped and rethrown as a runtime exception.
+     */
     public static <T> List<T> parseArray(String json) {
         return parseObject(json, new TypeReference<List<T>>() {});
     }
 
+    /**
+     * Parses the given JSON string into a List of objects of the specified class type.
+     *
+     * @param json  The JSON string to be parsed into a List.
+     * @param clazz The target class type to which the JSON objects should be deserialized.
+     * @param <T>   The generic type parameter representing the type of objects in the List.
+     * @return A List of objects of type `T` parsed from the JSON string.
+     * If an exception occurs during parsing, it is wrapped and rethrown as a runtime exception.
+     */
     public static <T> List<T> parseArray(String json, Class<T> clazz) {
         return parseObject(json, new TypeReference<List<T>>() {});
     }
@@ -171,10 +250,27 @@ public final class Jsoner {
 
     // ----------------------------------------------------------------
 
+    /**
+     * Converts the given object into a JSON string representation using default serialization options.
+     *
+     * @param object The object to be converted into a JSON string.
+     * @param <T>    The type of the input object to be serialized.
+     * @return A JSON formatted string representing the provided object.
+     * If an exception occurs during serialization, it is wrapped and rethrown as a runtime exception.
+     */
     public static <T> String toJSONString(T object) {
         return toJSONString(object, null);
     }
 
+    /**
+     * Converts the given object into a JSON string representation using specified serialization options.
+     *
+     * @param object The object to be converted into a JSON string.
+     * @param view   The view class used for serialization control, or null for default serialization.
+     * @param <T>    The type of the input object to be serialized.
+     * @return A JSON formatted string representing the provided object.
+     * If an exception occurs during serialization, it is wrapped and rethrown as a runtime exception.
+     */
     public static <T> String toJSONString(T object, Class<?> view) {
         try {
             ObjectMapper mapper = getObjectMapper();
@@ -188,10 +284,23 @@ public final class Jsoner {
         }
     }
 
+    /**
+     * Retrieves the shared ObjectMapper instance, or creates a new one if not already initialized.
+     *
+     * @return The shared ObjectMapper instance used for JSON serialization and deserialization.
+     */
     public static ObjectMapper getObjectMapper() {
         return sharedObjectMapper != null ? sharedObjectMapper : objectMapperHolder.get();
     }
 
+    /**
+     * Converts the given object into a byte array representation using default serialization options.
+     *
+     * @param object The object to be converted into a byte array.
+     * @param <T>    The type of the input object to be serialized.
+     * @return A byte array representing the provided object in serialized form.
+     * If an exception occurs during serialization, it is wrapped and rethrown as a runtime exception.
+     */
     public static <T> byte[] toByteArray(T object) {
         try {
             ObjectMapper mapper = getObjectMapper();
@@ -201,33 +310,14 @@ public final class Jsoner {
         }
     }
 
-    public static JsonNode node(String json) {
-        return parseObject(json, JsonNode.class);
-    }
-
-    public static int maxDeepSize(JsonNode one, JsonNode two) {
-        return Math.max(deepSize(one), deepSize(two));
-    }
-
-    public static int deepSize(JsonNode node) {
-        if (node == null) {
-            return 0;
-        }
-
-        int acc = 1;
-        if (node.isContainerNode()) {
-            for (JsonNode child : node) {
-                acc++;
-                if (child.isContainerNode()) {
-                    acc += deepSize(child);
-                }
-            }
-        }
-
-        return acc;
-    }
-
-    public static String prettyPrint(String json) {
+    /**
+     * Formats the given JSON string with pretty printing for improved readability.
+     *
+     * @param json The JSON string to be pretty printed.
+     * @return A formatted JSON string with improved readability.
+     * If an exception occurs during formatting, it is wrapped and rethrown as a runtime exception.
+     */
+    public static String toPrettyJSONString(String json) {
         ObjectMapper mapper = getObjectMapper();
         try {
             // @formatter:off
@@ -240,29 +330,31 @@ public final class Jsoner {
         }
     }
 
+    /**
+     * Converts a Map object to an instance of the specified target class using ObjectMapper's convertValue method.
+     *
+     * @param map         The Map object to be converted.
+     * @param targetClass The target class type to which the Map should be converted.
+     * @param <T>         The generic type parameter representing the type of the converted object.
+     * @return An instance of the target class `T` converted from the Map object.
+     * If an exception occurs during conversion, it is wrapped and rethrown as a runtime exception.
+     */
     public static <T> T mapToObject(Map<String, Object> map, Class<T> targetClass) {
         ObjectMapper mapper = getObjectMapper();
         return mapper.convertValue(map, targetClass);
     }
 
-    public static <T> Map<String, Object> objectToMap(T theObject) {
+    /**
+     * Converts the given object to a Map object using ObjectMapper's convertValue method.
+     *
+     * @param object The object to be converted to a Map.
+     * @param <T>    The type of the input object to be converted.
+     * @return A Map object representing the provided object's fields and values.
+     * If an exception occurs during conversion, it is wrapped and rethrown as a runtime exception.
+     */
+    public static <T> Map<String, Object> objectToMap(T object) {
         ObjectMapper mapper = getObjectMapper();
-        return mapper.convertValue(theObject, new TypeReference<Map<String, Object>>() {});
-    }
-
-    public static int schemaPropertyCount(JsonNode schema) {
-        int count = 0;
-        final JsonNode propertiesNode = schema.get("properties");
-        if (propertiesNode != null && !propertiesNode.isEmpty()) {
-            for (JsonNode property : propertiesNode) {
-                count++;
-                if (property.has("properties")) {
-                    count += schemaPropertyCount(property);
-                }
-            }
-        }
-
-        return count;
+        return mapper.convertValue(object, new TypeReference<Map<String, Object>>() {});
     }
 
     public static <T> T throwUnchecked(final Throwable ex, final Class<T> returnType) {
@@ -277,13 +369,5 @@ public final class Jsoner {
     @SuppressWarnings("unchecked")
     private static <T extends Throwable> void throwsUnchecked(Throwable toThrow) throws T {
         throw (T) toThrow;
-    }
-
-    public static <T> T uncheck(Callable<T> work, Class<T> returnType) {
-        try {
-            return work.call();
-        } catch (Exception e) {
-            return throwUnchecked(e, returnType);
-        }
     }
 }

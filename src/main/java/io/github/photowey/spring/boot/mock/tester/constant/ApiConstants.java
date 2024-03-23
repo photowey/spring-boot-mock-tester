@@ -24,5 +24,10 @@ package io.github.photowey.spring.boot.mock.tester.constant;
  */
 public interface ApiConstants {
 
+    /**
+     * Defines the string constant for a successful API operation response.
+     * This constant represents the indication of a normal, error-free API operation.
+     * It is typically used as part of the response result.
+     */
     String API_OK = "000000";
 }

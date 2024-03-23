@@ -28,6 +28,13 @@ public final class AssertionErrorThrower {
         throwz(AssertionErrorThrower.class);
     }
 
+    /**
+     * Throws an {@link AssertionError} with a message that indicates no instances of the specified class can be created.
+     * This method is designed to be used when it's necessary to prevent instantiation of a particular type.
+     *
+     * @param clazz The class whose name will be included in the error message of the AssertionError.
+     * @throws AssertionError Always throws an instance of AssertionError with a message indicating that no instances of `clazz` are allowed.
+     */
     public static <T> void throwz(Class<T> clazz) {
         throw new AssertionError("No " + clazz.getName() + " instances for you!");
     }
