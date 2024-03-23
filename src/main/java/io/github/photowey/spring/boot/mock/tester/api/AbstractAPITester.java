@@ -166,48 +166,31 @@ public abstract class AbstractAPITester {
     // ---------------------------------------------------------------- Post
 
     protected String doPostRequest(String route) throws Exception {
-        return this.doPostRequest(route, (actions) -> {
-            try {
-                actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
-    }
-
-    protected <T> String doPostRequest(T payload, String route) throws Exception {
-        return this.doPostRequest(payload, route, (actions) -> {
-            try {
-                actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
-    }
-
-    protected <T> String doPostRequestB(T payload, String route, Consumer<MockHttpServletRequestBuilder> fn) throws Exception {
-        return this.doPostRequest(payload, route, fn, (actions) -> {
-            try {
-                actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
-    }
-
-    protected <T> String doPostRequest(T payload, String route, Consumer<ResultActions> fx) throws Exception {
-        return this.doPostRequest(payload, route, (builder) -> {}, fx);
+        return this.doPostRequest(null, route);
     }
 
     protected String doPostRequest(String route, Consumer<ResultActions> fx) throws Exception {
-        return this.doPostRequest(route, (builder) -> {}, fx);
+        return this.doPostRequest(null, route, fx);
     }
 
-    protected <T> String doPostRequest(
-            String route,
-            Consumer<MockHttpServletRequestBuilder> fn,
-            Consumer<ResultActions> fx) throws Exception {
+    protected <T> String doPostRequestB(String route, Consumer<MockHttpServletRequestBuilder> fx) throws Exception {
+        return this.doPostRequestB(null, route, fx);
+    }
+
+    protected <T> String doPostRequest(String route, Consumer<MockHttpServletRequestBuilder> fn, Consumer<ResultActions> fx) throws Exception {
         return this.doPostRequest(null, route, fn, fx);
+    }
+
+    protected <T> String doPostRequest(T payload, String route) throws Exception {
+        return this.doPostRequest(payload, route, this::defaultPredicate);
+    }
+
+    protected <T> String doPostRequest(T payload, String route, Consumer<ResultActions> fx) throws Exception {
+        return this.doPostRequest(payload, route, this::emptyBuilder, fx);
+    }
+
+    protected <T> String doPostRequestB(T payload, String route, Consumer<MockHttpServletRequestBuilder> fn) throws Exception {
+        return this.doPostRequest(payload, route, fn, this::defaultPredicate);
     }
 
     protected <T> String doPostRequest(
@@ -219,6 +202,7 @@ public abstract class AbstractAPITester {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(route)
                 .contentType(MediaType.APPLICATION_JSON_VALUE);
+
         if (isNotEmpty(payload)) {
             String body = Jsoner.toJSONString(payload);
             requestBuilder.content(body);
@@ -231,52 +215,32 @@ public abstract class AbstractAPITester {
 
     // ---------------------------------------------------------------- Put
 
-    protected <T> String doPutRequest(String route) throws Exception {
-        return this.doPutRequest(route, (actions) -> {
-            try {
-                actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+    protected String doPutRequest(String route) throws Exception {
+        return this.doPutRequest(null, route);
+    }
+
+    protected String doPutRequest(String route, Consumer<ResultActions> fx) throws Exception {
+        return this.doPutRequest(null, route, fx);
+    }
+
+    protected <T> String doPutRequestB(String route, Consumer<MockHttpServletRequestBuilder> fx) throws Exception {
+        return this.doPutRequestB(null, route, fx);
+    }
+
+    protected <T> String doPutRequest(String route, Consumer<MockHttpServletRequestBuilder> fn, Consumer<ResultActions> fx) throws Exception {
+        return this.doPutRequest(null, route, fn, fx);
     }
 
     protected <T> String doPutRequest(T payload, String route) throws Exception {
-        return this.doPutRequest(payload, route, (actions) -> {
-            try {
-                actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
-    }
-
-    protected <T> String doPutRequest(String route, Consumer<ResultActions> fx) throws Exception {
-        return this.doPutRequest(route, (builder) -> {}, fx);
+        return this.doPutRequest(payload, route, this::defaultPredicate);
     }
 
     protected <T> String doPutRequest(T payload, String route, Consumer<ResultActions> fx) throws Exception {
-        return this.doPutRequest(payload, route, (builder) -> {}, fx);
+        return this.doPutRequest(payload, route, this::emptyBuilder, fx);
     }
 
-    protected <T> String doPutRequestB(
-            T payload,
-            String route,
-            Consumer<MockHttpServletRequestBuilder> fn) throws Exception {
-        return this.doPutRequest(payload, route, fn, (actions) -> {
-            try {
-                actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
-    }
-
-    protected <T> String doPutRequest(
-            String route,
-            Consumer<MockHttpServletRequestBuilder> fn,
-            Consumer<ResultActions> fx) throws Exception {
-        return this.doPutRequest(null, route, fn, fx);
+    protected <T> String doPutRequestB(T payload, String route, Consumer<MockHttpServletRequestBuilder> fn) throws Exception {
+        return this.doPutRequest(payload, route, fn, this::defaultPredicate);
     }
 
     protected <T> String doPutRequest(
@@ -301,52 +265,32 @@ public abstract class AbstractAPITester {
 
     // ---------------------------------------------------------------- Patch
 
-    protected <T> String doPatchRequest(String route) throws Exception {
-        return this.doPatchRequest(route, (actions) -> {
-            try {
-                actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+    protected String doPatchRequest(String route) throws Exception {
+        return this.doPatchRequest(null, route);
+    }
+
+    protected String doPatchRequest(String route, Consumer<ResultActions> fx) throws Exception {
+        return this.doPatchRequest(null, route, fx);
+    }
+
+    protected <T> String doPatchRequestB(String route, Consumer<MockHttpServletRequestBuilder> fx) throws Exception {
+        return this.doPatchRequestB(null, route, fx);
+    }
+
+    protected <T> String doPatchRequest(String route, Consumer<MockHttpServletRequestBuilder> fn, Consumer<ResultActions> fx) throws Exception {
+        return this.doPatchRequest(null, route, fn, fx);
     }
 
     protected <T> String doPatchRequest(T payload, String route) throws Exception {
-        return this.doPatchRequest(payload, route, (actions) -> {
-            try {
-                actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
-    }
-
-    protected <T> String doPatchRequest(String route, Consumer<ResultActions> fx) throws Exception {
-        return this.doPatchRequest(route, (builder) -> {}, fx);
+        return this.doPatchRequest(payload, route, this::defaultPredicate);
     }
 
     protected <T> String doPatchRequest(T payload, String route, Consumer<ResultActions> fx) throws Exception {
-        return this.doPatchRequest(payload, route, (builder) -> {}, fx);
+        return this.doPatchRequest(payload, route, this::emptyBuilder, fx);
     }
 
-    protected <T> String doPatchRequestB(
-            T payload,
-            String route,
-            Consumer<MockHttpServletRequestBuilder> fn) throws Exception {
-        return this.doPatchRequest(payload, route, fn, (actions) -> {
-            try {
-                actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
-    }
-
-    protected <T> String doPatchRequest(
-            String route,
-            Consumer<MockHttpServletRequestBuilder> fn,
-            Consumer<ResultActions> fx) throws Exception {
-        return this.doPatchRequest(null, route, fn, fx);
+    protected <T> String doPatchRequestB(T payload, String route, Consumer<MockHttpServletRequestBuilder> fn) throws Exception {
+        return this.doPatchRequest(payload, route, fn, this::defaultPredicate);
     }
 
     protected <T> String doPatchRequest(
@@ -371,69 +315,102 @@ public abstract class AbstractAPITester {
 
     // ---------------------------------------------------------------- Delete
 
-    protected <T> void doDeleteRequest(T payload, String route) throws Exception {
-        this.doDeleteRequest(payload, route, (actions) -> {
-            try {
-                actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+    protected String doDeleteRequest(String route) throws Exception {
+        return this.doDeleteRequest(null, route);
     }
 
-    protected <T> void doDeleteRequest(
-            T payload,
-            String route,
-            Consumer<ResultActions> fx) throws Exception {
-        this.doDeleteRequest(payload, route, (builder) -> {}, fx);
+    protected String doDeleteRequest(String route, Consumer<ResultActions> fx) throws Exception {
+        return this.doDeleteRequest(null, route, fx);
     }
 
-    protected <T> void doDeleteRequestB(
-            T payload,
-            String route,
-            Consumer<MockHttpServletRequestBuilder> fn) throws Exception {
-        this.doDeleteRequest(payload, route, fn, (actions) -> {
-            try {
-                actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+    protected <T> String doDeleteRequestB(String route, Consumer<MockHttpServletRequestBuilder> fx) throws Exception {
+        return this.doDeleteRequestB(null, route, fx);
     }
 
-    protected <T> void doDeleteRequest(
+    protected <T> String doDeleteRequest(String route, Consumer<MockHttpServletRequestBuilder> fn, Consumer<ResultActions> fx) throws Exception {
+        return this.doDeleteRequest(null, route, fn, fx);
+    }
+
+    protected <T> String doDeleteRequest(T payload, String route) throws Exception {
+        return this.doDeleteRequest(payload, route, this::defaultPredicate);
+    }
+
+    protected <T> String doDeleteRequest(T payload, String route, Consumer<ResultActions> fx) throws Exception {
+        return this.doDeleteRequest(payload, route, this::emptyBuilder, fx);
+    }
+
+    protected <T> String doDeleteRequestB(T payload, String route, Consumer<MockHttpServletRequestBuilder> fn) throws Exception {
+        return this.doDeleteRequest(payload, route, fn, this::defaultPredicate);
+    }
+
+    protected <T> String doDeleteRequest(
             T payload,
             String route,
             Consumer<MockHttpServletRequestBuilder> fn,
             Consumer<ResultActions> fx) throws Exception {
 
-        String body = Jsoner.toJSONString(payload);
-
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .delete(route)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(body);
+                .contentType(MediaType.APPLICATION_JSON_VALUE);
+
+        if (isNotEmpty(payload)) {
+            String body = Jsoner.toJSONString(payload);
+            requestBuilder.content(body);
+        }
 
         fn.accept(requestBuilder);
 
-        ResultActions actions = this.mockMvc.perform(requestBuilder).andExpect(status().isOk());
-        fx.accept(actions);
-
-        actions.andDo(print())
-                .andReturn()
-                .getResponse()
-                .getContentAsString(StandardCharsets.UTF_8);
-
+        return this.execute(requestBuilder, fx);
     }
 
-    protected void doDeleteRequest(String route) throws Exception {
-        this.mockMvc.perform(MockMvcRequestBuilders.delete(route))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()))
-                .andDo(print())
-                .andReturn()
-                .getResponse()
-                .getContentAsString(StandardCharsets.UTF_8);
+    // ---------------------------------------------------------------- Get
+
+    protected String doGetRequest(String route) throws Exception {
+        return this.doGetRequest(null, route);
+    }
+
+    protected String doGetRequest(String route, Consumer<ResultActions> fx) throws Exception {
+        return this.doGetRequest(null, route, fx);
+    }
+
+    protected String doGetRequestB(String route, Consumer<MockHttpServletRequestBuilder> fx) throws Exception {
+        return this.doGetRequestB(null, route, fx);
+    }
+
+    protected String doGetRequest(String route, Consumer<MockHttpServletRequestBuilder> fn, Consumer<ResultActions> fx) throws Exception {
+        return this.doGetRequest(null, route, fn, fx);
+    }
+
+    protected <Q> String doGetRequest(Q query, String route) throws Exception {
+        return this.doGetRequest(query, route, this::emptyBuilder, this::defaultPredicate);
+    }
+
+    protected <Q> String doGetRequest(Q query, String route, Consumer<ResultActions> fx) throws Exception {
+        return this.doGetRequest(query, route, this::emptyBuilder, fx);
+    }
+
+    protected <Q> String doGetRequestB(Q query, String route, Consumer<MockHttpServletRequestBuilder> fx) throws Exception {
+        return this.doGetRequest(query, route, fx, this::defaultPredicate);
+    }
+
+    protected <Q> String doGetRequest(
+            Q query,
+            String route,
+            Consumer<MockHttpServletRequestBuilder> fn,
+            Consumer<ResultActions> fx) throws Exception {
+
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+                .get(route)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE);
+
+        if (isNotEmpty(query)) {
+            MultiValueMap<String, String> params = this.getMultiValueMap(query);
+            builder.queryParams(params);
+        }
+
+        fn.accept(builder);
+
+        return this.execute(builder, fx);
     }
 
     // ---------------------------------------------------------------- Exec
@@ -447,114 +424,13 @@ public abstract class AbstractAPITester {
 
         String content = actions.andDo(print())
                 .andReturn()
-                .getResponse().getContentAsString(StandardCharsets.UTF_8);
+                .getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
 
         return content;
     }
 
-    // ---------------------------------------------------------------- Get
-
-    protected String doGetResult(String route) throws Exception {
-        return this.doGetRequest(route);
-    }
-
-    protected String doGetResult(String route, Consumer<ResultActions> fx) throws Exception {
-        return this.doGetRequest(route, fx);
-    }
-
-    protected String doGetResult(String route, Consumer<MockHttpServletRequestBuilder> fn, Consumer<ResultActions> fx) throws Exception {
-        return this.doGetRequest(route, fn, fx);
-    }
-
-    protected <Q> String doGetResult(Q query, String route, Consumer<ResultActions> fx) throws Exception {
-        return this.doGetRequest(query, route, fx);
-    }
-
-    protected <Q> String doGetResult(
-            Q query,
-            String route,
-            Consumer<MockHttpServletRequestBuilder> fn,
-            Consumer<ResultActions> fx) throws Exception {
-        return this.doGetRequest(query, route, fn, fx);
-    }
-
-    // ----------------------------------------------------------------
-
-    protected String doGetRequest(String route) throws Exception {
-        return this.doGetRequest(DefaultQuery.empty(), route, (b) -> {
-        }, (actions) -> {
-            try {
-                actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
-    }
-
-    protected String doGetRequest(String route, Consumer<ResultActions> fx) throws Exception {
-        return this.doGetRequest(DefaultQuery.empty(), route, (b) -> {}, fx);
-    }
-
-    protected String doGetRequest(String route, Consumer<MockHttpServletRequestBuilder> fn, Consumer<ResultActions> fx) throws Exception {
-        return this.doGetRequest(DefaultQuery.empty(), route, fn, fx);
-    }
-
-    protected String doGetRequestB(String route, Consumer<MockHttpServletRequestBuilder> fn) throws Exception {
-        return this.doGetRequest(DefaultQuery.empty(), route, fn, (actions) -> {
-            try {
-                actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
-    }
-
-    protected <Q> String doGetRequest(Q query, String route, Consumer<ResultActions> fx) throws Exception {
-        MultiValueMap<String, String> params = this.getMultiValueMap(query);
-
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get(route)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                .queryParams(params);
-
-        ResultActions actions = this.mockMvc
-                .perform(builder)
-                .andExpect(MockMvcResultMatchers.status().isOk());
-
-        fx.accept(actions);
-
-        String content = actions.andDo(print())
-                .andReturn()
-                .getResponse().getContentAsString(StandardCharsets.UTF_8);
-
-        return content;
-    }
-
-    protected <Q> String doGetRequest(
-            Q query,
-            String route,
-            Consumer<MockHttpServletRequestBuilder> fn,
-            Consumer<ResultActions> fx) throws Exception {
-        MultiValueMap<String, String> params = this.getMultiValueMap(query);
-
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get(route)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE);
-
-        if (isNotEmpty(params)) {
-            builder.queryParams(params);
-        }
-
-        fn.accept(builder);
-        ResultActions actions = this.mockMvc
-                .perform(builder)
-                .andExpect(MockMvcResultMatchers.status().isOk());
-        fx.accept(actions);
-
-        String content = actions.andDo(print())
-                .andReturn()
-                .getResponse().getContentAsString(StandardCharsets.UTF_8);
-
-        return content;
-    }
+    // ---------------------------------------------------------------- Query
 
     private <Q> MultiValueMap<String, String> getMultiValueMap(Q query) throws IllegalAccessException {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -582,6 +458,18 @@ public abstract class AbstractAPITester {
         }
 
         return params;
+    }
+
+    // ----------------------------------------------------------------
+
+    public void emptyBuilder(MockHttpServletRequestBuilder builder) {}
+
+    public void defaultPredicate(ResultActions actions) {
+        try {
+            actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     // ----------------------------------------------------------------
