@@ -17,7 +17,7 @@ package io.github.photowey.spring.boot.mock.tester.api;
 
 import io.github.photowey.spring.boot.mock.tester.constant.ApiConstants;
 import io.github.photowey.spring.boot.mock.tester.domain.query.DefaultQuery;
-import io.github.photowey.spring.boot.mock.tester.json.Jsoner;
+import io.github.photowey.spring.infras.common.json.JSON;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -303,7 +303,7 @@ public abstract class AbstractAPITester {
                 .contentType(MediaType.APPLICATION_JSON_VALUE);
 
         if (isNotEmpty(payload)) {
-            String body = Jsoner.toJSONString(payload);
+            String body = JSON.Jackson.toJSONString(payload);
             requestBuilder.content(body);
         }
 
@@ -425,7 +425,7 @@ public abstract class AbstractAPITester {
                 .contentType(MediaType.APPLICATION_JSON_VALUE);
 
         if (isNotEmpty(payload)) {
-            String body = Jsoner.toJSONString(payload);
+            String body = JSON.Jackson.toJSONString(payload);
             requestBuilder.content(body);
         }
 
@@ -547,7 +547,7 @@ public abstract class AbstractAPITester {
                 .contentType(MediaType.APPLICATION_JSON_VALUE);
 
         if (isNotEmpty(payload)) {
-            String body = Jsoner.toJSONString(payload);
+            String body = JSON.Jackson.toJSONString(payload);
             requestBuilder.content(body);
         }
 
@@ -669,7 +669,7 @@ public abstract class AbstractAPITester {
                 .contentType(MediaType.APPLICATION_JSON_VALUE);
 
         if (isNotEmpty(payload)) {
-            String body = Jsoner.toJSONString(payload);
+            String body = JSON.Jackson.toJSONString(payload);
             requestBuilder.content(body);
         }
 

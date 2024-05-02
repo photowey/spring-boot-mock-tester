@@ -28,7 +28,17 @@ public class DefaultQuery implements Serializable {
 
     private static final long serialVersionUID = -2225601429538050358L;
 
+    private Long _timestamp;
+
     public static DefaultQuery empty() {
         return new DefaultQuery();
+    }
+
+    public Long getTimestamp() {
+        return _timestamp;
+    }
+
+    public void setTimestamp(Long timestamp) {
+        this._timestamp = timestamp;
     }
 }
