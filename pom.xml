@@ -12,7 +12,7 @@
 
     <groupId>io.github.photowey</groupId>
     <artifactId>spring-boot-mock-tester</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0-SNAPSHOT</version>
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>It is a Spring Boot Web API unit testing tool set implemented by MockMvc.</description>

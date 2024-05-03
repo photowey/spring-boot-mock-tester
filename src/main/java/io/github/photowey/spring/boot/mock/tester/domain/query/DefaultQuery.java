@@ -30,8 +30,14 @@ public class DefaultQuery implements Serializable {
 
     private Long _timestamp;
 
+    public DefaultQuery() {}
+
+    public DefaultQuery(Long timestamp) {
+        this._timestamp = timestamp;
+    }
+
     public static DefaultQuery empty() {
-        return new DefaultQuery();
+        return new DefaultQuery(System.currentTimeMillis());
     }
 
     public Long getTimestamp() {
