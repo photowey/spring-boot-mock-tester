@@ -18,10 +18,15 @@ package io.github.photowey.spring.boot.mock.tester.thrower;
 /**
  * {@code AssertionErrorThrower}
  *
+ * <p>
+ * Use {@link AssertionErrors} instead.
+ *
  * @author photowey
  * @date 2024/03/22
  * @since 1.0.0
+ *
  */
+@Deprecated
 public final class AssertionErrorThrower {
 
     private AssertionErrorThrower() {
@@ -36,6 +41,6 @@ public final class AssertionErrorThrower {
      * @throws AssertionError Always throws an instance of AssertionError with a message indicating that no instances of `clazz` are allowed.
      */
     public static <T> void throwz(Class<T> clazz) {
-        throw new AssertionError("No " + clazz.getName() + " instances for you!");
+        AssertionErrors.throwz(clazz);
     }
 }

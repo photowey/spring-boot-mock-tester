@@ -7,7 +7,7 @@ It is a Spring Boot Web `API` unit testing tool set implemented by `MockMvc`.
 Add this to your `pom.xml`
 
 ```xml
-<!-- ${spring-boot-mock-tester.version} == ${latest.version} -->
+<!-- ${spring-boot-mock-tester.version} == ${latest.version} == 1.2.0 -->
 <dependency>
     <groupId>io.github.photowey</groupId>
     <artifactId>spring-boot-mock-tester</artifactId>
@@ -15,18 +15,16 @@ Add this to your `pom.xml`
     <scope>test</scope>
 </dependency>
 
-<!-- If necessary -->
+        <!-- If necessary -->
 <dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-web</artifactId>
+<groupId>org.springframework.boot</groupId>
+<artifactId>spring-boot-starter-web</artifactId>
 </dependency>
 <dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-security</artifactId>
+<groupId>org.springframework.boot</groupId>
+<artifactId>spring-boot-starter-security</artifactId>
 </dependency>
 ```
-
-
 
 ## 2.`APIs`
 
@@ -87,13 +85,12 @@ public abstract class LocalTest extends AbstractAPITester {
 }
 ```
 
-
-
 ### 2.2.`API`
 
 #### 2.2.1.`Health check`
 
 ```java
+
 @SpringBootTest(classes = App.class)
 class ApiTest extends LocalTest {
 
@@ -113,15 +110,24 @@ class ApiTest extends LocalTest {
 }
 ```
 
-
-
 #### 2.2.2.`Get`
 
 ```java
+
 @SpringBootTest(classes = App.class)
 class ApiTest extends LocalTest {
 
     private static final String METHODS_BASE_API = "/api/v1";
+
+    private String mockLogin() {
+        String token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+
+        return token;
+    }
+
+    private String tryLogin() {
+        return this.mockLogin();
+    }
 
     @Test
     void testGet_1() throws Exception {
@@ -131,18 +137,14 @@ class ApiTest extends LocalTest {
     @Test
     void testGet_2() throws Exception {
         this.get_2("photowey", (actions) -> {
-            try {
-                actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()))
-                        .andExpect(MockMvcResultMatchers.jsonPath("$.data.greeting").value("Hello get.photowey"));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            actions.andExpect(jsonPath(this.okPattern()).value(this.apiOk()))
+                    .andExpect(jsonPath("$.data.greeting").value("Hello get.photowey"));
         });
     }
 
     @Test
     void testGet_3() throws Exception {
-        String token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+        String token = this.tryLogin();
 
         this.get_3("photowey", (builder) -> {
             builder.header("Tenant", "web");
@@ -152,18 +154,14 @@ class ApiTest extends LocalTest {
 
     @Test
     void testGet_4() throws Exception {
-        String token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+        String token = this.tryLogin();
 
         this.get_4("photowey", (builder) -> {
             builder.header("Tenant", "web");
             builder.header("Authorization", token);
         }, (actions) -> {
-            try {
-                actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()))
-                        .andExpect(MockMvcResultMatchers.jsonPath("$.data.greeting").value("Hello get.photowey"));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            actions.andExpect(jsonPath(this.okPattern()).value(this.apiOk()))
+                    .andExpect(jsonPath("$.data.greeting").value("Hello get.photowey"));
         });
     }
 
@@ -179,12 +177,8 @@ class ApiTest extends LocalTest {
         HelloQuery query = new HelloQuery("photowey");
 
         this.get_6(query, (actions) -> {
-            try {
-                actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()))
-                        .andExpect(MockMvcResultMatchers.jsonPath("$.data.greeting").value("Hello get.photowey"));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            actions.andExpect(jsonPath(this.okPattern()).value(this.apiOk()))
+                    .andExpect(jsonPath("$.data.greeting").value("Hello get.photowey"));
         });
     }
 
@@ -192,7 +186,7 @@ class ApiTest extends LocalTest {
     void testGet_7() throws Exception {
         HelloQuery query = new HelloQuery("photowey");
 
-        String token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+        String token = this.tryLogin();
 
         this.get_7(query, (builder) -> {
             builder.header("Tenant", "web");
@@ -204,34 +198,39 @@ class ApiTest extends LocalTest {
     void testGet_8() throws Exception {
         HelloQuery query = new HelloQuery("photowey");
 
-        String token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+        String token = this.tryLogin();
 
         this.get_8(query, (builder) -> {
             builder.header("Tenant", "web");
             builder.header("Authorization", token);
         }, (actions) -> {
-            try {
-                actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()))
-                        .andExpect(MockMvcResultMatchers.jsonPath("$.data.greeting").value("Hello get.photowey"));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            actions.andExpect(jsonPath(this.okPattern()).value(this.apiOk()))
+                    .andExpect(jsonPath("$.data.greeting").value("Hello get.photowey"));
         });
     }
 }
 ```
 
-
-
 #### 2.2.3.`Post`
 
 ```java
+
 @SpringBootTest(classes = App.class)
 class ApiTest extends LocalTest {
 
     private static final String METHODS_BASE_API = "/api/v1";
 
-@Test
+    private String mockLogin() {
+        String token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+
+        return token;
+    }
+
+    private String tryLogin() {
+        return this.mockLogin();
+    }
+
+    @Test
     void testPost_1() throws Exception {
         Long userId = 1711185600000L;
         this.post_1(userId);
@@ -241,12 +240,8 @@ class ApiTest extends LocalTest {
     void testPost_2() throws Exception {
         Long userId = 1711185600000L;
         this.post_2(userId, (actions) -> {
-            try {
-                actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()))
-                        .andExpect(MockMvcResultMatchers.jsonPath("$.data.greeting").value("Hello post.empty.1711185600000"));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            actions.andExpect(jsonPath(this.okPattern()).value(this.apiOk()))
+                    .andExpect(jsonPath("$.data.greeting").value("Hello post.empty.1711185600000"));
         });
     }
 
@@ -254,7 +249,7 @@ class ApiTest extends LocalTest {
     void testPost_3() throws Exception {
         Long userId = 1711185600000L;
 
-        String token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+        String token = this.tryLogin();
 
         this.post_3(userId, (builder) -> {
             builder.header("Tenant", "web");
@@ -266,18 +261,14 @@ class ApiTest extends LocalTest {
     void testPost_4() throws Exception {
         Long userId = 1711185600000L;
 
-        String token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+        String token = this.tryLogin();
 
         this.post_4(userId, (builder) -> {
             builder.header("Tenant", "web");
             builder.header("Authorization", token);
         }, (actions) -> {
-            try {
-                actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()))
-                        .andExpect(MockMvcResultMatchers.jsonPath("$.data.greeting").value("Hello post.empty.1711185600000"));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            actions.andExpect(jsonPath(this.okPattern()).value(this.apiOk()))
+                    .andExpect(jsonPath("$.data.greeting").value("Hello post.empty.1711185600000"));
         });
     }
 
@@ -293,12 +284,8 @@ class ApiTest extends LocalTest {
         HelloPayload payload = new HelloPayload("photowey");
 
         this.post_6(payload, (actions) -> {
-            try {
-                actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()))
-                        .andExpect(MockMvcResultMatchers.jsonPath("$.data.greeting").value("Hello post.photowey"));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            actions.andExpect(jsonPath(this.okPattern()).value(this.apiOk()))
+                    .andExpect(jsonPath("$.data.greeting").value("Hello post.photowey"));
         });
     }
 
@@ -306,7 +293,7 @@ class ApiTest extends LocalTest {
     void testPost_7() throws Exception {
         HelloPayload payload = new HelloPayload("photowey");
 
-        String token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+        String token = this.tryLogin();
 
         this.post_7(payload, (builder) -> {
             builder.header("Tenant", "web");
@@ -318,28 +305,23 @@ class ApiTest extends LocalTest {
     void testPost_8() throws Exception {
         HelloPayload payload = new HelloPayload("photowey");
 
-        String token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+        String token = this.tryLogin();
 
         this.post_8(payload, (builder) -> {
             builder.header("Tenant", "web");
             builder.header("Authorization", token);
         }, (actions) -> {
-            try {
-                actions.andExpect(MockMvcResultMatchers.jsonPath(this.okPattern()).value(this.apiOk()))
-                        .andExpect(MockMvcResultMatchers.jsonPath("$.data.greeting").value("Hello post.photowey"));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            actions.andExpect(jsonPath(this.okPattern()).value(this.apiOk()))
+                    .andExpect(jsonPath("$.data.greeting").value("Hello post.photowey"));
         });
     }
 }
 ```
 
-
-
 #### 2.2.4.`Put`
 
 ```java
+
 @SpringBootTest(classes = App.class)
 class ApiTest extends LocalTest {
 
@@ -348,12 +330,11 @@ class ApiTest extends LocalTest {
     // Usage is similar to POST method
 }
 ```
-
-
 
 #### 2.2.5.`Patch`
 
 ```java
+
 @SpringBootTest(classes = App.class)
 class ApiTest extends LocalTest {
 
@@ -362,12 +343,11 @@ class ApiTest extends LocalTest {
     // Usage is similar to POST method
 }
 ```
-
-
 
 #### 2.2.6.`Delete`
 
 ```java
+
 @SpringBootTest(classes = App.class)
 class ApiTest extends LocalTest {
 
@@ -377,11 +357,10 @@ class ApiTest extends LocalTest {
 }
 ```
 
-
-
 ### 2.3.`Methods`
 
 ```java
+
 @SpringBootTest(classes = App.class)
 class ApiTest extends LocalTest {
 
@@ -391,7 +370,7 @@ class ApiTest extends LocalTest {
         this.doGetRequest(METHODS_BASE_API + "/get?name=" + name);
     }
 
-    private void get_2(String name, Consumer<ResultActions> fx) throws Exception {
+    private void get_2(String name, ThrowableConsumer<ResultActions> fx) throws Exception {
         this.doGetRequest(METHODS_BASE_API + "/get?name=" + name, fx);
     }
 
@@ -399,7 +378,7 @@ class ApiTest extends LocalTest {
         this.doGetRequestB(METHODS_BASE_API + "/get?name=" + name, fx);
     }
 
-    private void get_4(String name, Consumer<MockHttpServletRequestBuilder> fn, Consumer<ResultActions> fx) throws Exception {
+    private void get_4(String name, Consumer<MockHttpServletRequestBuilder> fn, ThrowableConsumer<ResultActions> fx) throws Exception {
         this.doGetRequest(METHODS_BASE_API + "/get?name=" + name, fn, fx);
     }
 
@@ -408,7 +387,7 @@ class ApiTest extends LocalTest {
         this.doGetRequest(query, METHODS_BASE_API + "/get");
     }
 
-    private void get_6(HelloQuery query, Consumer<ResultActions> fx) throws Exception {
+    private void get_6(HelloQuery query, ThrowableConsumer<ResultActions> fx) throws Exception {
         this.doGetRequest(query, METHODS_BASE_API + "/get", fx);
     }
 
@@ -416,7 +395,7 @@ class ApiTest extends LocalTest {
         this.doGetRequestB(query, METHODS_BASE_API + "/get", fx);
     }
 
-    private void get_8(HelloQuery query, Consumer<MockHttpServletRequestBuilder> fn, Consumer<ResultActions> fx) throws Exception {
+    private void get_8(HelloQuery query, Consumer<MockHttpServletRequestBuilder> fn, ThrowableConsumer<ResultActions> fx) throws Exception {
         this.doGetRequest(query, METHODS_BASE_API + "/get", fn, fx);
     }
 
@@ -426,7 +405,7 @@ class ApiTest extends LocalTest {
         this.doPostRequest(METHODS_BASE_API + "/post/empty/" + userId);
     }
 
-    private void post_2(Long userId, Consumer<ResultActions> fx) throws Exception {
+    private void post_2(Long userId, ThrowableConsumer<ResultActions> fx) throws Exception {
         this.doPostRequest(METHODS_BASE_API + "/post/empty/" + userId, fx);
     }
 
@@ -434,7 +413,7 @@ class ApiTest extends LocalTest {
         this.doPostRequestB(METHODS_BASE_API + "/post/empty/" + userId, fx);
     }
 
-    private void post_4(Long userId, Consumer<MockHttpServletRequestBuilder> fn, Consumer<ResultActions> fx) throws Exception {
+    private void post_4(Long userId, Consumer<MockHttpServletRequestBuilder> fn, ThrowableConsumer<ResultActions> fx) throws Exception {
         this.doPostRequest(METHODS_BASE_API + "/post/empty/" + userId, fn, fx);
     }
 
@@ -442,7 +421,7 @@ class ApiTest extends LocalTest {
         this.doPostRequest(payload, METHODS_BASE_API + "/post");
     }
 
-    private void post_6(HelloPayload payload, Consumer<ResultActions> fx) throws Exception {
+    private void post_6(HelloPayload payload, ThrowableConsumer<ResultActions> fx) throws Exception {
         this.doPostRequest(payload, METHODS_BASE_API + "/post", fx);
     }
 
@@ -453,7 +432,7 @@ class ApiTest extends LocalTest {
     private void post_8(
             HelloPayload payload,
             Consumer<MockHttpServletRequestBuilder> fn,
-            Consumer<ResultActions> fx) throws Exception {
+            ThrowableConsumer<ResultActions> fx) throws Exception {
         this.doPostRequest(payload, METHODS_BASE_API + "/post", fn, fx);
     }
 
@@ -463,7 +442,7 @@ class ApiTest extends LocalTest {
         this.doPutRequest(METHODS_BASE_API + "/put/empty/" + userId);
     }
 
-    private void put_2(Long userId, Consumer<ResultActions> fx) throws Exception {
+    private void put_2(Long userId, ThrowableConsumer<ResultActions> fx) throws Exception {
         this.doPutRequest(METHODS_BASE_API + "/put/empty/" + userId, fx);
     }
 
@@ -471,7 +450,7 @@ class ApiTest extends LocalTest {
         this.doPutRequestB(METHODS_BASE_API + "/put/empty/" + userId, fx);
     }
 
-    private void put_4(Long userId, Consumer<MockHttpServletRequestBuilder> fn, Consumer<ResultActions> fx) throws Exception {
+    private void put_4(Long userId, Consumer<MockHttpServletRequestBuilder> fn, ThrowableConsumer<ResultActions> fx) throws Exception {
         this.doPutRequest(METHODS_BASE_API + "/put/empty/" + userId, fn, fx);
     }
 
@@ -479,7 +458,7 @@ class ApiTest extends LocalTest {
         this.doPutRequest(payload, METHODS_BASE_API + "/put");
     }
 
-    private void put_6(HelloPayload payload, Consumer<ResultActions> fx) throws Exception {
+    private void put_6(HelloPayload payload, ThrowableConsumer<ResultActions> fx) throws Exception {
         this.doPutRequest(payload, METHODS_BASE_API + "/put", fx);
     }
 
@@ -490,7 +469,7 @@ class ApiTest extends LocalTest {
     private void put_8(
             HelloPayload payload,
             Consumer<MockHttpServletRequestBuilder> fn,
-            Consumer<ResultActions> fx) throws Exception {
+            ThrowableConsumer<ResultActions> fx) throws Exception {
         this.doPutRequest(payload, METHODS_BASE_API + "/put", fn, fx);
     }
 
@@ -500,7 +479,7 @@ class ApiTest extends LocalTest {
         this.doPatchRequest(METHODS_BASE_API + "/patch/empty/" + userId);
     }
 
-    private void patch_2(Long userId, Consumer<ResultActions> fx) throws Exception {
+    private void patch_2(Long userId, ThrowableConsumer<ResultActions> fx) throws Exception {
         this.doPatchRequest(METHODS_BASE_API + "/patch/empty/" + userId, fx);
     }
 
@@ -508,7 +487,7 @@ class ApiTest extends LocalTest {
         this.doPatchRequestB(METHODS_BASE_API + "/patch/empty/" + userId, fx);
     }
 
-    private void patch_4(Long userId, Consumer<MockHttpServletRequestBuilder> fn, Consumer<ResultActions> fx) throws Exception {
+    private void patch_4(Long userId, Consumer<MockHttpServletRequestBuilder> fn, ThrowableConsumer<ResultActions> fx) throws Exception {
         this.doPatchRequest(METHODS_BASE_API + "/patch/empty/" + userId, fn, fx);
     }
 
@@ -516,7 +495,7 @@ class ApiTest extends LocalTest {
         this.doPatchRequest(payload, METHODS_BASE_API + "/patch");
     }
 
-    private void patch_6(HelloPayload payload, Consumer<ResultActions> fx) throws Exception {
+    private void patch_6(HelloPayload payload, ThrowableConsumer<ResultActions> fx) throws Exception {
         this.doPatchRequest(payload, METHODS_BASE_API + "/patch", fx);
     }
 
@@ -527,7 +506,7 @@ class ApiTest extends LocalTest {
     private void patch_8(
             HelloPayload payload,
             Consumer<MockHttpServletRequestBuilder> fn,
-            Consumer<ResultActions> fx) throws Exception {
+            ThrowableConsumer<ResultActions> fx) throws Exception {
         this.doPatchRequest(payload, METHODS_BASE_API + "/patch", fn, fx);
     }
 
@@ -537,7 +516,7 @@ class ApiTest extends LocalTest {
         this.doDeleteRequest(METHODS_BASE_API + "/delete/empty/" + userId);
     }
 
-    private void delete_2(Long userId, Consumer<ResultActions> fx) throws Exception {
+    private void delete_2(Long userId, ThrowableConsumer<ResultActions> fx) throws Exception {
         this.doDeleteRequest(METHODS_BASE_API + "/delete/empty/" + userId, fx);
     }
 
@@ -545,7 +524,7 @@ class ApiTest extends LocalTest {
         this.doDeleteRequestB(METHODS_BASE_API + "/delete/empty/" + userId, fx);
     }
 
-    private void delete_4(Long userId, Consumer<MockHttpServletRequestBuilder> fn, Consumer<ResultActions> fx) throws Exception {
+    private void delete_4(Long userId, Consumer<MockHttpServletRequestBuilder> fn, ThrowableConsumer<ResultActions> fx) throws Exception {
         this.doDeleteRequest(METHODS_BASE_API + "/delete/empty/" + userId, fn, fx);
     }
 
@@ -553,7 +532,7 @@ class ApiTest extends LocalTest {
         this.doDeleteRequest(payload, METHODS_BASE_API + "/delete");
     }
 
-    private void delete_6(HelloPayload payload, Consumer<ResultActions> fx) throws Exception {
+    private void delete_6(HelloPayload payload, ThrowableConsumer<ResultActions> fx) throws Exception {
         this.doDeleteRequest(payload, METHODS_BASE_API + "/delete", fx);
     }
 
@@ -564,19 +543,18 @@ class ApiTest extends LocalTest {
     private void delete_8(
             HelloPayload payload,
             Consumer<MockHttpServletRequestBuilder> fn,
-            Consumer<ResultActions> fx) throws Exception {
+            ThrowableConsumer<ResultActions> fx) throws Exception {
         this.doDeleteRequest(payload, METHODS_BASE_API + "/delete", fn, fx);
     }
 }
 ```
-
-
 
 ## 3.`Controller`
 
 ### 3.1.`Health`
 
 ```java
+
 @RestController
 public class HealthController {
 
@@ -599,11 +577,10 @@ public class HealthController {
 
 ```
 
-
-
 ### 3.2.`Api`
 
 ```java
+
 @RestController
 @RequestMapping("/api/v1")
 public class ApiController {
@@ -727,13 +704,12 @@ public class ApiController {
 }
 ```
 
-
-
 ## 4.`Security`
 
 ### 4.1.`Configuration`
 
 ```java
+
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfigure {
@@ -786,8 +762,6 @@ public class SecurityConfigure {
 }
 ```
 
-
-
 ## 5.`Model`
 
 ### 5.1.`Result`
@@ -834,8 +808,6 @@ public class ApiResult<T> implements Serializable {
 }
 ```
 
-
-
 ### 5.2.`DTO`
 
 #### 5.2.1.`Status`
@@ -870,8 +842,6 @@ public class StatusDTO implements Serializable {
 
 ```
 
-
-
 #### 5.2.2.`Greeting`
 
 ```java
@@ -897,8 +867,6 @@ public class GreetingDTO implements Serializable {
     }
 }
 ```
-
-
 
 ### 5.3.`Payload`
 
@@ -926,8 +894,6 @@ public class HelloPayload implements Serializable {
 }
 ```
 
-
-
 ### 5.4.`Query`
 
 ```java
@@ -953,8 +919,6 @@ public class HelloQuery implements Serializable {
 }
 ```
 
-
-
 ## 6.`JSON`
 
 ### 6.1.`Jsoner`
@@ -968,9 +932,11 @@ public final class Jsoner {
 
     private static ObjectMapper sharedObjectMapper;
 
-    public static class PrivateView {}
+    public static class PrivateView {
+    }
 
-    public static class PublicView {}
+    public static class PublicView {
+    }
 
     private static final InheritableThreadLocal<ObjectMapper> objectMapperHolder = new InheritableThreadLocal<ObjectMapper>() {
         @Override
@@ -1061,11 +1027,13 @@ public final class Jsoner {
     // ---------------------------------------------------------------- parse.array
 
     public static <T> List<T> parseArray(String json) {
-        return parseObject(json, new TypeReference<List<T>>() {});
+        return parseObject(json, new TypeReference<List<T>>() {
+        });
     }
 
     public static <T> List<T> parseArray(String json, Class<T> clazz) {
-        return parseObject(json, new TypeReference<List<T>>() {});
+        return parseObject(json, new TypeReference<List<T>>() {
+        });
     }
 
     // ---------------------------------------------------------------- additional.methods
@@ -1079,15 +1047,18 @@ public final class Jsoner {
     }
 
     public static <T> Set<T> toSet(String json) {
-        return parseObject(json, new TypeReference<Set<T>>() {});
+        return parseObject(json, new TypeReference<Set<T>>() {
+        });
     }
 
     public static <T> Collection<T> toCollection(String json) {
-        return parseObject(json, new TypeReference<Set<T>>() {});
+        return parseObject(json, new TypeReference<Set<T>>() {
+        });
     }
 
     public static <T> Map<String, T> toMap(String json) {
-        return parseObject(json, new TypeReference<Map<String, T>>() {});
+        return parseObject(json, new TypeReference<Map<String, T>>() {
+        });
     }
 
     // ----------------------------------------------------------------
@@ -1168,7 +1139,8 @@ public final class Jsoner {
 
     public static <T> Map<String, Object> objectToMap(T theObject) {
         ObjectMapper mapper = getObjectMapper();
-        return mapper.convertValue(theObject, new TypeReference<Map<String, Object>>() {});
+        return mapper.convertValue(theObject, new TypeReference<Map<String, Object>>() {
+        });
     }
 
     public static int schemaPropertyCount(JsonNode schema) {
@@ -1211,49 +1183,43 @@ public final class Jsoner {
 
 ```
 
-
-
 #### 6.2.`bjectMapper`
 
 ##### 6.2.1.`Register`
 
 ```java
 public final class Jsoner {
-    
+
     // ...
 
     public static void injectSharedObjectMapper(ObjectMapper objectMapper) {
         sharedObjectMapper = objectMapper;
     }
-   
+
     // ...
 }
 ```
-
-
 
 ##### 6.2.2.`Init`
 
 ```java
 public final class Jsoner {
-    
+
     // ...
 
     private static ObjectMapper initObjectMapper() {
         return sharedObjectMapper != null ? sharedObjectMapper : initDefaultObjectMapper();
     }
-   
+
     // ...
 }
 ```
-
-
 
 ##### 6.2.3.`Default`
 
 ```java
 public final class Jsoner {
-    
+
     // ...
 
     private static ObjectMapper initDefaultObjectMapper() {
@@ -1272,7 +1238,7 @@ public final class Jsoner {
 
         return objectMapper;
     }
-   
+
     // ...
 }
 ```
