@@ -32,17 +32,17 @@ public abstract class LocalTest extends AbstractAPITester {
     }
 
     @Override
-    protected String apiOk() {
+    public String apiOk() {
         return "200";
     }
 
     @Override
-    protected String okPattern() {
+    public String okPattern() {
         return "$.code";
     }
 
     @Override
-    protected String healthApi() {
+    public String healthApi() {
         return "/healthz";
     }
 }
